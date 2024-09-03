@@ -1,46 +1,28 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback, useRef } from "react";
+import { redirect, Link } from "react-router-dom";
+import { Dashboard } from "../dashboard/Dashboard";
+import { InputLogin } from "./components/InputLogin";
 
 export const Login = () => {
-  
+  const inputPasswordRef = useRef<HTMLInputElement>(null);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  useEffect(() => {
-    /*if (window.confirm('Voce é homem?')){
-      console.log("Homem")
-    } else {
-      console.log("Mulher")
-  
-    }*/
-  }, []);
-
-  useEffect(() => {
-    console.log(email)
-  }, [email]);
-
-  useEffect(() => {
-    console.log(password)
-  }, [password]);
-
-
-  /* usar useEffect para algo que só precisa ser chamado uma vez no código, como uma api com dados de usuario 
-
-  dependecies [x] = quando x for alterado, o codigo dentro do useEffect roda
-  */
 
   const emailLength = useMemo(() => {
-    console.log("rodou")
     return email.length * 10;
   }, [email.length]);
- 
 
-  const handlerEntrar = () => {
-    console.log(email)
-    console.log(password)
-  }
+  const handlerEntrar = useCallback(() => {
+      console.log(email)
+      console.log(password)
 
-
+      if (inputPasswordRef.current !== null) {
+          inputPasswordRef.current.focus()
+      }
+    
+    }, [email, password]);
 
 
   return(
@@ -48,19 +30,27 @@ export const Login = () => {
         <form>
           <p>Quantidade de caracteres do email: {emailLength}</p>
 
-          <label>
-            <span>Email</span>
-            <input value={email} onChange={e => setEmail(e.target.value)}/>
-          </label>
+          <InputLogin 
+            label="Email"
+            value={email}
+            onChange={newValue => setEmail(newValue)}
+            onPressEnter={() => inputPasswordRef.current?.focus()}
+            />
 
-          <label>
-            <span>Senha</span>
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)}/>
-          </label>
-
+        
+          <InputLogin 
+            type="password"
+            label="Senha"
+            value={password}
+            onChange={newValue => setPassword(newValue)}
+            />
+        
           <button type="button" onClick={handlerEntrar}>
             Entrar
           </button>
+          <p></p>
+          <br />
+          <Link to="/inicio">Inicio</Link>
         </form>
       </div>
   );
